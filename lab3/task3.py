@@ -34,7 +34,7 @@ def window(location, coefficient_size):
 
     surface_window = py.Surface((200 / coefficient_size, 300 / coefficient_size))
     surface_window.fill((255, 255, 255))
-    color_window = 0, 191, 255
+    color_window = 0, 192, 255
 
     rect(surface_window, color_window,
          (10 / coefficient_size, 10 / coefficient_size, 80 / coefficient_size, 100 / coefficient_size))
