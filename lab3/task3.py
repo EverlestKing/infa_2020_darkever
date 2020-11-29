@@ -236,5 +236,7 @@ while not finish:
         clock.tick(FPS)
         if event.type == py.quit:
             finish = True
+        elif event.type == py.KEYDOWN:
+            finish = True
 
 py.quit()
