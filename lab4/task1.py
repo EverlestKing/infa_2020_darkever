@@ -20,8 +20,15 @@ x_forward = 0
 y_forward = 0
 
 
-def click():
-   print ('click')
+def click(position):
+    global score ,x ,y, r
+    up=x+r
+    down=x-r
+    left=y-r
+    right=y+r
+    if position [0] < up and position [0] > down and position [1] < right and position [1] > left:
+        score+=1
+        print(score)
 
 
 
@@ -46,7 +53,8 @@ while not finished:
         if event.type == pygame.QUIT:
             finished = True
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            click()
+            position = event.pos
+            click(position)
     new_ball()
     pygame.display.update()
     screen.fill(BLACK)
