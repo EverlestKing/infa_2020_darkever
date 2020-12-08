@@ -39,6 +39,8 @@ def new_ball():
     y = randint(100, 900)
     r = randint(10, 100)
     color = COLORS[randint(0, 5)]
+    n = 5
+    list = [randint(100,1100) for i in range(n)]
     circle(screen, color, (x, y), r)
 
 

@@ -1,0 +1,126 @@
+import pygame
+from pygame.draw import *
+from random import randint
+import math
+pygame.init()
+
+FPS = 20
+screen = pygame.display.set_mode((900, 600))
+
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+YELLOW = (255, 255, 0)
+GREEN = (0, 255, 0)
+MAGENTA = (255, 0, 255)
+CYAN = (0, 255, 255)
+BLACK = (0, 0, 0)
+COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
+score = 0
+n=10
+speed=10
+
+x_forward = 0
+y_forward = 0
+
+list_ball = [0]*n
+
+
+def click(position):
+    global score ,x ,y, r
+    up=x+r
+    down=x-r
+    left=y-r
+    right=y+r
+    if position [0] < up and position [0] > down and position [1] < right and position [1] > left:
+        score+=1
+        print(score)
+
+
+
+
+def new_ball():
+    global  x, y, r
+
+
+    for i in range(n):
+        x=randint(100, 800)
+        y=randint(100, 500)
+        r=randint(10, 50)
+        alpha = randint (0,360)
+        color= COLORS [randint(0, 5)]
+        x_forward = speed * math.cos(alpha)
+        y_forward = speed * math.sin(alpha)
+        circle(screen,color,(x,y),r)
+        list_ball[i] = x,y,r,color,x_forward,y_forward
+
+
+
+def move_ball():
+    for i in range(len(list_ball)):
+
+        M = list_ball[i]
+        (x ,y ,r ,color ,x_forward,y_forward) = M
+        M=(x+x_forward, y+y_forward, r, color, x_forward, y_forward)
+
+        circle(screen, M[3], (M[0], M[1]), M[2])
+        list_ball[i]=M
+
+
+
+
+
+def reflection():
+    for i in range (n):
+        R = list_ball[i]
+        (x,y,r,color,x_forward,y_forward) = R
+
+        if x + r >= 900:
+            R = (x,y,r,color,-x_forward,y_forward)
+
+        elif x -r <=0:
+            R=(x, y, r, color, -x_forward, y_forward)
+
+        elif y + r >= 600:
+            R = (x,y,r,color,x_forward,-y_forward)
+
+        elif y-r <= 0:
+            R=(x, y, r, color, x_forward, -y_forward)
+
+        list_ball[i] = R
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+pygame.display.update()
+clock = pygame.time.Clock()
+finished = False
+gracie = False
+new_ball()
+while not finished:
+    clock.tick(FPS)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            finished = True
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            position = event.pos
+            click(position)
+    reflection()
+    move_ball()
+    pygame.display.update()
+    screen.fill(BLACK)
+
+pygame.quit()
