@@ -1,124 +1,138 @@
 import pygame
 from pygame.draw import *
-from random import randint
+from random import randint, random
 import math
+
+print ('Введите свое имя игрок:')
+name = input()
 pygame.init()
 
-FPS = 20
-screen = pygame.display.set_mode((900, 600))
+FPS=20
+screen=pygame.display.set_mode((900, 600))
 
-RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-YELLOW = (255, 255, 0)
-GREEN = (0, 255, 0)
-MAGENTA = (255, 0, 255)
-CYAN = (0, 255, 255)
-BLACK = (0, 0, 0)
-COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
-score = 0
-n=10
-speed=10
+RED=(255, 0, 0)
+BLUE=(0, 0, 255)
+YELLOW=(255, 255, 0)
+GREEN=(0, 255, 0)
+MAGENTA=(255, 0, 255)
+CYAN=(0, 255, 255)
+BLACK=(0, 0, 0)
+COLORS=[RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
+score=0
+n=7
+SPEED=10
+position_surface1_x = 0
+position_surface1_y = 0
+position_surface2_x = 550
+position_surface2_y = 850
 
-x_forward = 0
-y_forward = 0
-
-list_ball = [0]*n
+list_ball=[0] * n
 
 
 def click(position):
-    global score ,x ,y, r
-    up=x+r
-    down=x-r
-    left=y-r
-    right=y+r
-    if position [0] < up and position [0] > down and position [1] < right and position [1] > left:
-        score+=1
+    global score
+    for i in range(n):
+        T=list_ball [i]
+        (x, y, r, color, x_forward, y_forward)=T
+        up=x+r
+        down=x-r
+        left=y-r
+        right=y+r
+        if position [0] < up and position [0] > down and position [1] < right and position [1] > left:
+            score+=1
+            print(score)
+
+
+def new_ball():
+    for k in range(n):
+        x=randint(100, 800)
+        y=randint(100, 500)
+        r=randint(10, 50)
+        color=COLORS [randint(0, 5)]
+        alpha=randint(0, 360)
+        x_forward=SPEED * math.cos(alpha)
+        y_forward=SPEED * math.sin(alpha)
+        circle(screen, color, (x, y), r)
+        list_ball [k]=(x, y, r, color, x_forward, y_forward)
+
+
+def new_target():
+    global  position_surface1_x,position_surface1_y,position_surface2_x,position_surface2_y
+    new_target_surface=pygame.Surface((50, 50))
+    color=COLORS [randint(0, 5)]
+    circle(new_target_surface, color, [25, 25], 20, 0, draw_top_right = True)
+    color_2=COLORS [randint(0, 5)]
+    circle(new_target_surface, color_2, [25, 25], 20, 30, draw_top_left = True)
+    color_3=COLORS [randint(0, 5)]
+    circle(new_target_surface, color_3, [25, 25], 20, 20, draw_bottom_left = True)
+    color_4=COLORS [randint(0, 5)]
+    circle(new_target_surface, color_4, [25, 25], 20, 10, draw_bottom_right = True)
+    screen.blit(new_target_surface, (position_surface1_x, position_surface1_y) )
+    screen.blit(new_target_surface, (position_surface2_x, position_surface2_y) )
+
+    position_surface1_x += 1.6*SPEED
+    position_surface2_x -= 1.6*SPEED
+    if position_surface1_x >= 900:
+        position_surface1_x = -50
+        position_surface1_y = randint(0,600)
+    if position_surface2_x <= 0:
+        position_surface2_x = 850
+        position_surface2_y = randint(0,600)
+
+def click_new_target(position):
+    global score , position_surface1_y,position_surface1_x , position_surface2_y,position_surface2_x
+    up1,up2 = position_surface1_x ,position_surface2_x
+    down1,down2 = position_surface1_x+50 , position_surface2_x+50
+    left1,left2 = position_surface1_y , position_surface2_y
+    right1,right2 = position_surface1_y+50 , position_surface2_y+50
+    if position [0] > up1 or up2 and position [0] < down1 or down2 and position [1] < right1 or right2 and position [1] > left1 or left2:
+        score+=2
         print(score)
 
 
 
 
-def new_ball():
-    global  x, y, r
-
-
-    for i in range(n):
-        x=randint(100, 800)
-        y=randint(100, 500)
-        r=randint(10, 50)
-        alpha = randint (0,360)
-        color= COLORS [randint(0, 5)]
-        x_forward = speed * math.cos(alpha)
-        y_forward = speed * math.sin(alpha)
-        circle(screen,color,(x,y),r)
-        list_ball[i] = x,y,r,color,x_forward,y_forward
-
-
 
 def move_ball():
     for i in range(len(list_ball)):
-
-        M = list_ball[i]
-        (x ,y ,r ,color ,x_forward,y_forward) = M
-        M=(x+x_forward, y+y_forward, r, color, x_forward, y_forward)
-
-        circle(screen, M[3], (M[0], M[1]), M[2])
-        list_ball[i]=M
-
-
-
+        M=list_ball [i]
+        (x, y, r, color, x_forward, y_forward)=M
+        M=(int(x+x_forward), int(y+y_forward), r, color, int(x_forward), int(y_forward))
+        circle(screen, M [3], (M [0], M [1]), M [2])
+        list_ball [i]=M
 
 
 def reflection():
-    for i in range (n):
-        R = list_ball[i]
-        (x,y,r,color,x_forward,y_forward) = R
-
-        if x + r >= 900:
-            R = (x,y,r,color,-x_forward,y_forward)
-
-        elif x -r <=0:
+    for i in range(n):
+        R=list_ball [i]
+        (x, y, r, color, x_forward, y_forward)=R
+        if x+r+5 >= 900 and x_forward > 0:
             R=(x, y, r, color, -x_forward, y_forward)
-
-        elif y + r >= 600:
-            R = (x,y,r,color,x_forward,-y_forward)
-
-        elif y-r <= 0:
+        elif x-r+5 <= 0 and x_forward < 0:
+            R=(x, y, r, color, -x_forward, y_forward)
+        elif y+r+5 >= 580 and y_forward > 0:
             R=(x, y, r, color, x_forward, -y_forward)
-
-        list_ball[i] = R
-
-
-
+        elif y-r+5 <= 0 and y_forward < 0:
+            R=(x, y, r, color, x_forward, -y_forward)
+        list_ball [i]=R
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-pygame.display.update()
-clock = pygame.time.Clock()
-finished = False
-gracie = False
+clock=pygame.time.Clock()
+finished=False
 new_ball()
 while not finished:
     clock.tick(FPS)
     for event in pygame.event.get():
+        reflection()
         if event.type == pygame.QUIT:
-            finished = True
+            finished=True
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            position = event.pos
+            position=event.pos
             click(position)
+            click_new_target(position)
+
     reflection()
+    new_target()
     move_ball()
     pygame.display.update()
     screen.fill(BLACK)
