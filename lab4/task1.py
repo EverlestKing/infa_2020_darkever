@@ -14,14 +14,14 @@ MAGENTA = (255, 0, 255)
 CYAN = (0, 255, 255)
 BLACK = (0, 0, 0)
 COLORS = [RED, BLUE, YELLOW, GREEN, MAGENTA, CYAN]
-score = 0
+Score = 0
 
 x_forward = 0
 y_forward = 0
 
 
 def click(position):
-    global score ,x ,y, r
+    global Score ,x ,y, r
     up=x+r
     down=x-r
     left=y-r
